@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
 /**
  * 
  * MÉTODOS:
@@ -12,8 +13,8 @@ const app = express();
  * 
  * PARÂMETROS:
  * Query Params: Vamos usar principalmente para filtros e paginação
- * Rout Params: 
- * Request Params:
+ * Rout Params: Identificar recursos na hora de atualizar ou deletar
+ * Request Body: Resto do conteúdo na hora de criar ou editar um recurso
  * 
  */
 
@@ -31,6 +32,9 @@ app.get('/projects',(req,res) => {
 });
 
 app.post('/projects', (req,res) => {
+    const body = req.body;  //Preciso informar para o express que quer em JSON
+    console.log(body);  //Ai muda isso colocando .json la no app.use(express)
+
     return res.json([
         'Projeto 1',
         'Projeto 2',
@@ -41,6 +45,10 @@ app.post('/projects', (req,res) => {
 });
 
 app.put('/projects/:id', (req,res) => { //passar o id que eu quero alterar
+    const params = req.params;
+
+    console.log(params);
+    
     return res.json([
         'Projeto 50',
         'Projeto 2',
