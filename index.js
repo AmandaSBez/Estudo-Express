@@ -1,8 +1,12 @@
 const express = require('express');
+const { uuid } = require('uuidv4')
 const app = express();
 
 app.use(express.json());
+
+const projects = [];
 /**
+ * CRUD
  * 
  * MÉTODOS:
  * 
@@ -32,16 +36,16 @@ app.get('/projects',(req,res) => {
 });
 
 app.post('/projects', (req,res) => {
-    const body = req.body;  //Preciso informar para o express que quer em JSON
-    console.log(body);  //Ai muda isso colocando .json la no app.use(express)
+    const {title, owner} = req.body;
+   
+    const project = {id : uuid(), title, owner}; //projeto recem criado
 
-    return res.json([
-        'Projeto 1',
-        'Projeto 2',
-        'Projeto 3',
-        'Projeto 4',
-        'Projeto 5'
-    ]);
+    projects.push(project); //esse push vai jogar a criação do nosso projeto para o nosso array
+    
+    //const body = req.body;  Preciso informar para o express que quer em JSON
+    // console.log(body);  Ai muda isso colocando .json la no app.use(express)
+
+    return res.json(project); //retorna project porque ele eh o recém criado e nunca se retona a lista completa
 });
 
 app.put('/projects/:id', (req,res) => { //passar o id que eu quero alterar
