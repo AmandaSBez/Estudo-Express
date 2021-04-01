@@ -1,10 +1,3 @@
-const express = require('express');
-const { uuid } = require('uuidv4')
-const app = express();
-
-app.use(express.json());
-
-const projects = [];
 /**
  * CRUD
  * 
@@ -21,6 +14,14 @@ const projects = [];
  * Request Body: Resto do conteúdo na hora de criar ou editar um recurso
  * 
  */
+
+const express = require('express');
+const { uuid } = require('uuidv4')
+const app = express();
+
+app.use(express.json());
+
+const projects = [];
 
 app.get('/projects',(req,res) => {
     //const {title, owner} = req.query;
@@ -42,24 +43,38 @@ app.post('/projects', (req,res) => {
 });
 
 app.put('/projects/:id', (req,res) => { //passar o id que eu quero alterar
-    const params = req.params;
+    const { id } = req.params;
+    const { title, owner } = req.body;
+    // aqui usamos o findIndex para percorrer todo o array atrás do id
+    // findIndex vai percorrer todos os projetos, e toda vez que ele percorrer na variavel
+    // project, caso ela satisfeita e retornar true, ela vai me retornar o id que estu passando dentro dos parêntesis
+    const projectIndex = projects.findIndex(project => project.id === id);
 
-    console.log(params);
-    
-    return res.json([
-        'Projeto 50',
-        'Projeto 2',
-        'Projeto 3',
-        'Projeto 4',
-        'Projeto 5'
-    ]);
+    if(projectIndex<0){
+        return res.status(400).json({ error: 'Projeto não foi encontrado'});
+    }
+    // agora que tenho indice vou criar uma nova informação ao projeto
+    const project = {
+        id,
+        title,
+        owner,
+    }
+    projects[projectIndex] = project;
+
+    return res.json(project);
 });
 
 app.delete('/projects/:id', (req,res) => {  ///para alterar tem que passar de onde eu quero alterar
-    return res.json([
-        'Projeto 50',
-        'Projeto 2'
-    ]);
+    const { id } = req.params;
+
+    const projectIndex = projects.findIndex(project => project.id === id);
+
+    if(projectIndex<0){
+        return res.status(400).json({ error: 'Projeto não foi encontrado'});
+    }
+    projects.splice(projectIndex, 1);
+
+    return res.status(204).send();
 });
 
 app.listen(3000);
